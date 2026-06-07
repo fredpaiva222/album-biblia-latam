@@ -9,20 +9,25 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 
 <script>
   tailwind.config = {
     theme: {
       extend: {
-        fontFamily: { sans: ['Outfit', 'sans-serif'] },
+        fontFamily: {
+          head: ['Outfit', 'system-ui', 'sans-serif'],
+          body: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+        },
         colors: {
-          canvas: '#F0F0F0',
-          ink: '#121212',
-          red: '#D02020',
-          blue: '#1040C0',
-          yellow: '#F0C020',
-          muted: '#E0E0E0',
+          bg: '#FFFDF5',
+          ink: '#1E293B',
+          mutedfg: '#64748B',
+          accent: '#8B5CF6',   // violeta
+          pink: '#F472B6',     // rosa
+          amber: '#FBBF24',    // amarelo
+          mint: '#34D399',     // menta
+          line: '#E2E8F0',
         },
       },
     },
@@ -31,207 +36,227 @@
 
 <style>
   html { scroll-behavior: smooth; }
-  body { background-color: #F0F0F0; color: #121212; font-family: 'Outfit', sans-serif; }
+  body { background-color: #FFFDF5; color: #1E293B; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+  h1,h2,h3,.font-head { font-family: 'Outfit', system-ui, sans-serif; }
 
-  .shadow-hard-sm { box-shadow: 4px 4px 0px 0px #121212; }
-  .shadow-hard-md { box-shadow: 6px 6px 0px 0px #121212; }
-  .shadow-hard-lg { box-shadow: 8px 8px 0px 0px #121212; }
+  /* Pop / hard shadows */
+  .pop      { box-shadow: 4px 4px 0px 0px #1E293B; }
+  .pop-lg   { box-shadow: 8px 8px 0px 0px #1E293B; }
+  .pop-soft { box-shadow: 8px 8px 0px 0px #E2E8F0; }
+  .pop-pink { box-shadow: 8px 8px 0px 0px #F472B6; }
 
-  .btn-press { transition: transform .15s ease-out, box-shadow .15s ease-out; }
-  .btn-press:active { transform: translate(2px, 2px); box-shadow: none !important; }
+  /* Candy button */
+  .candy { transition: transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s cubic-bezier(.34,1.56,.64,1); }
+  .candy:hover  { transform: translate(-2px,-2px); box-shadow: 6px 6px 0px 0px #1E293B; }
+  .candy:active { transform: translate(2px,2px);   box-shadow: 2px 2px 0px 0px #1E293B; }
 
-  .triangle { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
+  /* Sticker card wiggle */
+  .sticker { transition: transform .3s cubic-bezier(.34,1.56,.64,1); }
+  .sticker:hover { transform: rotate(-1deg) scale(1.02); }
 
-  .dot-grid {
-    background-image: radial-gradient(#121212 2px, transparent 2px);
-    background-size: 22px 22px;
-  }
+  /* Dot grid */
+  .dot-grid { background-image: radial-gradient(#E2E8F0 2.2px, transparent 2.2px); background-size: 24px 24px; }
 
-  /* Marquee de feedbacks */
+  /* Blob image mask */
+  .blob { border-radius: 64% 36% 57% 43% / 43% 47% 53% 57%; }
+
+  /* Marquee */
   .marquee { overflow: hidden; }
   .marquee-track { display: flex; gap: 1.25rem; width: max-content; animation: scroll 60s linear infinite; }
   .marquee:hover .marquee-track { animation-play-state: paused; }
-  @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes scroll { from { transform: translateX(0);} to { transform: translateX(-50%);} }
 
   /* Accordion */
   .acc-content { max-height: 0; overflow: hidden; transition: max-height .35s ease-out; }
   .acc-item.open .acc-content { max-height: 400px; }
   .acc-item.open .acc-chevron { transform: rotate(180deg); }
-  .acc-item.open .acc-header { background-color: #D02020; color: #fff; }
+
+  /* Wiggle icon on hover */
+  @keyframes wiggle { 0%,100%{transform:rotate(0)} 25%{transform:rotate(8deg)} 75%{transform:rotate(-8deg)} }
+  .group:hover .wiggle { animation: wiggle .5s ease-in-out; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .candy, .sticker, .marquee-track, .wiggle { transition: none !important; animation: none !important; }
+  }
+  @media (max-width: 640px) {
+    .pop { box-shadow: 2px 2px 0 0 #1E293B; }
+    .pop-lg, .pop-soft, .pop-pink { box-shadow: 4px 4px 0 0 #E2E8F0; }
+  }
 </style>
 </head>
 
 <body class="overflow-x-hidden">
 
 <!-- ============ NAV ============ -->
-<nav class="sticky top-0 z-50 bg-canvas border-b-4 border-ink">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <div class="flex items-center gap-1.5">
-        <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-red border-2 border-ink"></span>
-        <span class="w-5 h-5 sm:w-6 sm:h-6 bg-blue border-2 border-ink"></span>
-        <span class="w-5 h-5 sm:w-6 sm:h-6 bg-yellow border-2 border-ink triangle"></span>
+<nav class="sticky top-0 z-50 bg-bg/90 backdrop-blur border-b-2 border-ink">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
+    <div class="flex items-center gap-2.5">
+      <div class="flex items-center -space-x-1.5">
+        <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-accent border-2 border-ink"></span>
+        <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-pink border-2 border-ink"></span>
+        <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber border-2 border-ink"></span>
       </div>
-      <span class="font-black uppercase tracking-tighter text-base sm:text-xl">Álbum de la Biblia</span>
+      <span class="font-head font-extrabold text-base sm:text-xl">Álbum de la Biblia</span>
     </div>
-    <a href="#oferta" class="hidden sm:inline-flex bg-red text-white border-2 border-ink shadow-hard-sm btn-press font-bold uppercase tracking-wider text-sm px-5 py-2.5">
-      Quiero el álbum
+    <a href="#oferta" class="hidden sm:inline-flex items-center gap-2 bg-accent text-white font-bold rounded-full border-2 border-ink pop candy text-sm px-5 py-2.5">
+      Quiero el álbum →
     </a>
   </div>
 </nav>
 
 <!-- ============ HERO ============ -->
-<header class="border-b-4 border-ink">
-  <div class="max-w-7xl mx-auto grid lg:grid-cols-2">
-    <!-- Izquierda -->
-    <div class="px-4 sm:px-6 lg:px-10 py-12 sm:py-16 lg:py-24 flex flex-col justify-center">
-      <span class="inline-block self-start bg-yellow text-ink border-2 border-ink shadow-hard-sm font-bold uppercase tracking-widest text-xs sm:text-sm px-4 py-2 mb-6">
-        📖 ¡Oferta de Lanzamiento!
-      </span>
-      <h1 class="font-black uppercase tracking-tighter leading-[0.9] text-4xl sm:text-6xl lg:text-7xl">
-        Álbum<br>de la<br><span class="text-red">Biblia</span>
-      </h1>
-      <p class="mt-6 text-lg sm:text-xl font-medium leading-relaxed max-w-md">
-        ¡La selección más poderosa de la historia se convirtió en un <span class="font-bold bg-yellow px-1">álbum de figuritas</span>!
-      </p>
-      <p class="mt-4 text-base font-medium leading-relaxed max-w-md text-ink/80">
-        87 personajes bíblicos coleccionables, desde el Antiguo hasta el Nuevo Testamento.
-      </p>
-      <div class="mt-8 flex flex-col sm:flex-row gap-4">
-        <a href="#oferta" class="bg-red text-white border-2 border-ink shadow-hard-md btn-press font-bold uppercase tracking-wider text-base px-7 py-4 text-center">
-          Quiero comenzar mi colección
-        </a>
+<header class="relative overflow-hidden border-b-2 border-ink">
+  <!-- confetes -->
+  <span class="absolute top-24 left-6 w-6 h-6 rounded-full bg-pink border-2 border-ink hidden md:block"></span>
+  <span class="absolute bottom-16 left-1/3 w-0 h-0 border-l-[14px] border-r-[14px] border-b-[24px] border-l-transparent border-r-transparent border-b-mint rotate-12 hidden md:block"></span>
+  <span class="absolute top-32 right-1/4 w-5 h-5 bg-amber border-2 border-ink rotate-12 hidden md:block"></span>
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20 lg:py-24 grid lg:grid-cols-2 gap-12 items-center">
+    <!-- Texto -->
+    <div class="relative">
+      <!-- círculo amarelo gigante atrás -->
+      <span class="absolute -top-10 -left-10 w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-amber/40 -z-0"></span>
+      <div class="relative z-10">
+        <span class="inline-flex items-center gap-2 bg-white text-ink border-2 border-ink rounded-full font-bold uppercase tracking-wide text-xs px-4 py-2 pop">
+          📖 ¡Oferta de Lanzamiento!
+        </span>
+        <h1 class="mt-6 font-head font-extrabold leading-[1.02] text-4xl sm:text-5xl lg:text-6xl">
+          Álbum de la <span class="text-accent">Biblia</span> <span class="inline-block">📖</span>
+        </h1>
+        <p class="mt-6 text-lg sm:text-xl font-medium leading-relaxed max-w-md text-ink/90">
+          ¡La selección más poderosa de la historia se convirtió en un <span class="bg-amber/60 rounded px-1 font-bold">álbum de figuritas</span>!
+        </p>
+        <p class="mt-4 text-base font-medium leading-relaxed max-w-md text-mutedfg">
+          87 personajes bíblicos coleccionables, desde el Antiguo hasta el Nuevo Testamento.
+        </p>
+        <div class="mt-8">
+          <a href="#oferta" class="inline-flex items-center gap-3 bg-accent text-white font-bold text-base sm:text-lg rounded-full border-2 border-ink pop candy px-7 py-4">
+            Quiero comenzar mi colección
+            <span class="w-7 h-7 rounded-full bg-white text-ink flex items-center justify-center">→</span>
+          </a>
+        </div>
+        <p class="mt-6 flex items-center gap-2.5 text-sm font-semibold text-ink/80">
+          <span class="w-6 h-6 rounded-full bg-mint border-2 border-ink inline-flex items-center justify-center text-ink text-xs">✓</span>
+          Aprobado por pastores, profesores y líderes del Ministerio Infantil
+        </p>
       </div>
-      <p class="mt-5 flex items-center gap-2 text-sm font-bold uppercase tracking-wide">
-        <span class="w-5 h-5 bg-blue rounded-full border-2 border-ink inline-flex items-center justify-center text-white text-[10px]">✓</span>
-        Aprobado por pastores, profesores y líderes del Ministerio Infantil
-      </p>
     </div>
 
-    <!-- Derecha: panel azul con composición geométrica -->
-    <div class="relative bg-blue border-t-4 lg:border-t-0 lg:border-l-4 border-ink min-h-[420px] lg:min-h-0 overflow-hidden flex items-center justify-center p-8">
-      <!-- formas decorativas -->
-      <span class="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-yellow/90 border-4 border-ink"></span>
-      <span class="absolute bottom-6 right-8 w-28 h-28 bg-red border-4 border-ink rotate-45"></span>
-      <span class="absolute top-10 right-10 w-0 h-0 border-l-[40px] border-r-[40px] border-b-[70px] border-l-transparent border-r-transparent border-b-yellow"></span>
-      <!-- mockup -->
-      <img src="images/mockup-principal.png" alt="Álbum de la Biblia con figuritas" class="relative z-10 w-full max-w-md drop-shadow-2xl">
+    <!-- Imagem -->
+    <div class="relative flex items-center justify-center">
+      <div class="absolute inset-0 dot-grid rounded-[40px] -z-0"></div>
+      <span class="absolute -top-4 -right-2 w-16 h-16 rounded-full bg-pink border-2 border-ink hidden sm:block"></span>
+      <span class="absolute -bottom-4 -left-2 w-14 h-14 bg-mint border-2 border-ink rounded-tl-2xl rounded-tr-2xl rounded-br-2xl hidden sm:block"></span>
+      <img src="images/mockup-principal.png" alt="Álbum de la Biblia con figuritas" class="relative z-10 w-full max-w-md drop-shadow-xl">
     </div>
   </div>
 </header>
 
 <!-- ============ STATS ============ -->
-<section class="bg-yellow border-b-4 border-ink">
-  <div class="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 divide-x-2 divide-y-2 lg:divide-y-0 divide-ink border-2 lg:border-0 border-ink">
-    <div class="p-8 sm:p-10 text-center flex flex-col items-center justify-center">
-      <span class="font-black text-5xl sm:text-6xl tracking-tighter">87</span>
-      <span class="mt-2 font-bold uppercase tracking-widest text-xs sm:text-sm">Figuritas Bíblicas</span>
+<section class="bg-accent border-b-2 border-ink">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12 grid grid-cols-2 lg:grid-cols-4 gap-5">
+    <div class="bg-white border-2 border-ink rounded-xl pop-soft text-center py-6 px-3">
+      <span class="font-head font-extrabold text-4xl sm:text-5xl text-accent">87</span>
+      <p class="mt-1 font-bold text-xs sm:text-sm uppercase tracking-wide text-mutedfg">Figuritas Bíblicas</p>
     </div>
-    <div class="p-8 sm:p-10 text-center flex flex-col items-center justify-center">
-      <span class="font-black text-5xl sm:text-6xl tracking-tighter">9</span>
-      <span class="mt-2 font-bold uppercase tracking-widest text-xs sm:text-sm">Categorías</span>
+    <div class="bg-white border-2 border-ink rounded-xl pop-soft text-center py-6 px-3">
+      <span class="font-head font-extrabold text-4xl sm:text-5xl text-pink">9</span>
+      <p class="mt-1 font-bold text-xs sm:text-sm uppercase tracking-wide text-mutedfg">Categorías</p>
     </div>
-    <div class="p-8 sm:p-10 text-center flex flex-col items-center justify-center">
-      <span class="font-black text-5xl sm:text-6xl tracking-tighter">20+</span>
-      <span class="mt-2 font-bold uppercase tracking-widest text-xs sm:text-sm">Páginas de Álbum</span>
+    <div class="bg-white border-2 border-ink rounded-xl pop-soft text-center py-6 px-3">
+      <span class="font-head font-extrabold text-4xl sm:text-5xl text-amber">20+</span>
+      <p class="mt-1 font-bold text-xs sm:text-sm uppercase tracking-wide text-mutedfg">Páginas de Álbum</p>
     </div>
-    <div class="p-8 sm:p-10 text-center flex flex-col items-center justify-center">
-      <span class="font-black text-4xl sm:text-5xl tracking-tighter">Todas</span>
-      <span class="mt-2 font-bold uppercase tracking-widest text-xs sm:text-sm">las Edades</span>
+    <div class="bg-white border-2 border-ink rounded-xl pop-soft text-center py-6 px-3">
+      <span class="font-head font-extrabold text-3xl sm:text-4xl text-mint">Todas</span>
+      <p class="mt-1 font-bold text-xs sm:text-sm uppercase tracking-wide text-mutedfg">las Edades</p>
     </div>
   </div>
 </section>
 
 <!-- ============ ¿QUÉ ES? ============ -->
-<section class="border-b-4 border-ink dot-grid">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
+<section class="relative border-b-2 border-ink dot-grid">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-20 sm:py-24">
     <div class="max-w-3xl">
-      <h2 class="font-black uppercase tracking-tighter leading-[0.95] text-3xl sm:text-5xl lg:text-6xl">
-        📖 ¿Qué es el<br><span class="text-blue">Álbum de la Biblia</span>?
+      <h2 class="font-head font-extrabold leading-[1.05] text-3xl sm:text-5xl">
+        📖 ¿Qué es el <span class="text-accent">Álbum de la Biblia</span>?
       </h2>
-      <p class="mt-6 text-lg font-medium leading-relaxed bg-canvas inline">
+      <p class="mt-6 text-lg font-medium leading-relaxed text-ink/90">
         Reúne a los principales personajes de la Biblia organizados para la mente de un niño, de forma clara, didáctica, ilustrada e inolvidable. Una excelente oportunidad para despertar el interés por la Palabra y transformar el juego en momentos memorables en familia.
       </p>
     </div>
 
-    <div class="mt-12 grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+    <div class="mt-14 grid md:grid-cols-2 lg:grid-cols-4 gap-8">
       <!-- card 1 -->
-      <div class="relative bg-white border-4 border-ink shadow-hard-lg p-6 hover:-translate-y-1 transition-transform duration-200">
-        <span class="absolute -top-3 -right-3 w-7 h-7 rounded-full bg-red border-2 border-ink"></span>
-        <div class="text-4xl mb-4">👤</div>
-        <h3 class="font-bold uppercase tracking-wide text-lg mb-2">Personajes bíblicos</h3>
-        <p class="font-medium text-ink/80 leading-relaxed">Quiénes fueron los principales personajes y el papel de cada uno en la historia de la Biblia.</p>
+      <div class="sticker group relative bg-white border-2 border-ink rounded-xl pop-soft pt-9 px-6 pb-6">
+        <div class="absolute -top-6 left-6 w-12 h-12 rounded-full bg-accent border-2 border-ink flex items-center justify-center text-white text-2xl wiggle">👤</div>
+        <h3 class="font-head font-bold text-lg mb-2">Personajes bíblicos</h3>
+        <p class="font-medium text-mutedfg leading-relaxed text-sm">Quiénes fueron los principales personajes y el papel de cada uno en la historia de la Biblia.</p>
       </div>
       <!-- card 2 -->
-      <div class="relative bg-white border-4 border-ink shadow-hard-lg p-6 hover:-translate-y-1 transition-transform duration-200">
-        <span class="absolute -top-3 -right-3 w-7 h-7 bg-blue border-2 border-ink"></span>
-        <div class="text-4xl mb-4">📜</div>
-        <h3 class="font-bold uppercase tracking-wide text-lg mb-2">Versículos importantes</h3>
-        <p class="font-medium text-ink/80 leading-relaxed">Cada figurita trae un versículo relacionado con el personaje para un momento devocional en familia.</p>
+      <div class="sticker group relative bg-white border-2 border-ink rounded-xl pop-soft pt-9 px-6 pb-6">
+        <div class="absolute -top-6 left-6 w-12 h-12 rounded-full bg-pink border-2 border-ink flex items-center justify-center text-white text-2xl wiggle">📜</div>
+        <h3 class="font-head font-bold text-lg mb-2">Versículos importantes</h3>
+        <p class="font-medium text-mutedfg leading-relaxed text-sm">Cada figurita trae un versículo relacionado con el personaje para un momento devocional en familia.</p>
       </div>
       <!-- card 3 -->
-      <div class="relative bg-white border-4 border-ink shadow-hard-lg p-6 hover:-translate-y-1 transition-transform duration-200">
-        <span class="absolute -top-3 -right-3 w-7 h-7 bg-yellow border-2 border-ink triangle"></span>
-        <div class="text-4xl mb-4">🗂️</div>
-        <h3 class="font-bold uppercase tracking-wide text-lg mb-2">Categorías organizadas</h3>
-        <p class="font-medium text-ink/80 leading-relaxed">Patriarcas, Jueces, Reyes, Profetas, Apóstoles, Mujeres y más, ordenados con claridad.</p>
+      <div class="sticker group relative bg-white border-2 border-ink rounded-xl pop-soft pt-9 px-6 pb-6">
+        <div class="absolute -top-6 left-6 w-12 h-12 rounded-full bg-amber border-2 border-ink flex items-center justify-center text-ink text-2xl wiggle">🗂️</div>
+        <h3 class="font-head font-bold text-lg mb-2">Categorías organizadas</h3>
+        <p class="font-medium text-mutedfg leading-relaxed text-sm">Patriarcas, Jueces, Reyes, Profetas, Apóstoles, Mujeres y más, ordenados con claridad.</p>
       </div>
       <!-- card 4 -->
-      <div class="relative bg-white border-4 border-ink shadow-hard-lg p-6 hover:-translate-y-1 transition-transform duration-200">
-        <span class="absolute -top-3 -right-3 w-7 h-7 rounded-full bg-red border-2 border-ink"></span>
-        <div class="text-4xl mb-4">🌍</div>
-        <h3 class="font-bold uppercase tracking-wide text-lg mb-2">Contexto histórico</h3>
-        <p class="font-medium text-ink/80 leading-relaxed">Desde el Antiguo hasta el Nuevo Testamento, en orden cronológico para facilitar la memorización.</p>
+      <div class="sticker group relative bg-white border-2 border-ink rounded-xl pop-soft pt-9 px-6 pb-6">
+        <div class="absolute -top-6 left-6 w-12 h-12 rounded-full bg-mint border-2 border-ink flex items-center justify-center text-ink text-2xl wiggle">🌍</div>
+        <h3 class="font-head font-bold text-lg mb-2">Contexto histórico</h3>
+        <p class="font-medium text-mutedfg leading-relaxed text-sm">Desde el Antiguo hasta el Nuevo Testamento, en orden cronológico para facilitar la memorización.</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ============ FRASE PUENTE ============ -->
-<section class="bg-red border-b-4 border-ink">
-  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16 text-center">
-    <p class="font-black uppercase tracking-tight leading-tight text-white text-2xl sm:text-4xl lg:text-5xl">
+<section class="bg-pink border-b-2 border-ink">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-14 text-center">
+    <p class="font-head font-extrabold leading-tight text-white text-2xl sm:text-4xl">
       📜 Cada página completada es un pedacito más de la Biblia guardado en el corazón.
     </p>
   </div>
 </section>
 
 <!-- ============ BARRERAS ============ -->
-<section class="border-b-4 border-ink">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
+<section class="border-b-2 border-ink">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-20 sm:py-24">
     <div class="max-w-3xl">
-      <h2 class="font-black uppercase tracking-tighter leading-[0.95] text-3xl sm:text-5xl">
-        La Biblia es <span class="text-red">encantadora</span>...
+      <h2 class="font-head font-extrabold leading-[1.05] text-3xl sm:text-5xl">
+        La Biblia es <span class="text-pink">encantadora</span>...
       </h2>
-      <p class="mt-6 text-lg font-medium leading-relaxed">
+      <p class="mt-6 text-lg font-medium leading-relaxed text-ink/90">
         ...pero para que los niños la vean así, ¡necesitamos presentársela así! Si te resulta difícil despertar el interés de tu hijo por la Palabra, <span class="font-bold">el problema no está en ti.</span> Existen barreras que dificultan esta conexión:
       </p>
     </div>
 
-    <div class="mt-12 grid md:grid-cols-3 gap-6 lg:gap-8">
-      <div class="relative bg-blue text-white border-4 border-ink shadow-hard-lg p-7">
-        <span class="absolute -top-3 -right-3 w-7 h-7 rounded-full bg-yellow border-2 border-ink"></span>
-        <div class="text-4xl mb-4">📱</div>
-        <h3 class="font-bold uppercase tracking-wide text-xl mb-3">Competencia con las pantallas</h3>
-        <p class="font-medium leading-relaxed text-white/90">En un mundo de videojuegos y videos, la Biblia parece menos atractiva. Coleccionar crea un compromiso que ninguna pantalla puede sustituir.</p>
+    <div class="mt-14 grid md:grid-cols-3 gap-8">
+      <div class="sticker group relative bg-white border-2 border-ink rounded-xl pop-soft pt-10 px-7 pb-7">
+        <div class="absolute -top-6 left-7 w-12 h-12 rounded-full bg-accent border-2 border-ink flex items-center justify-center text-white text-2xl wiggle">📱</div>
+        <h3 class="font-head font-bold text-xl mb-3">Competencia con las pantallas</h3>
+        <p class="font-medium text-mutedfg leading-relaxed">En un mundo de videojuegos y videos, la Biblia parece menos atractiva. Coleccionar crea un compromiso que ninguna pantalla puede sustituir.</p>
       </div>
-      <div class="relative bg-blue text-white border-4 border-ink shadow-hard-lg p-7">
-        <span class="absolute -top-3 -right-3 w-7 h-7 bg-yellow border-2 border-ink"></span>
-        <div class="text-4xl mb-4">📖</div>
-        <h3 class="font-bold uppercase tracking-wide text-xl mb-3">Barrera de contexto</h3>
-        <p class="font-medium leading-relaxed text-white/90">Las historias bíblicas parecen distantes de la realidad de los niños. El álbum organiza los personajes de forma visual y accesible.</p>
+      <div class="sticker group relative bg-white border-2 border-ink rounded-xl pop-soft pt-10 px-7 pb-7">
+        <div class="absolute -top-6 left-7 w-12 h-12 rounded-full bg-pink border-2 border-ink flex items-center justify-center text-white text-2xl wiggle">📖</div>
+        <h3 class="font-head font-bold text-xl mb-3">Barrera de contexto</h3>
+        <p class="font-medium text-mutedfg leading-relaxed">Las historias bíblicas parecen distantes de la realidad de los niños. El álbum organiza los personajes de forma visual y accesible.</p>
       </div>
-      <div class="relative bg-blue text-white border-4 border-ink shadow-hard-lg p-7">
-        <span class="absolute -top-3 -right-3 w-7 h-7 bg-yellow border-2 border-ink triangle"></span>
-        <div class="text-4xl mb-4">🗣️</div>
-        <h3 class="font-bold uppercase tracking-wide text-xl mb-3">Barrera lingüística</h3>
-        <p class="font-medium leading-relaxed text-white/90">Los términos difíciles crean distancia. Cada figurita presenta al personaje de manera sencilla, con versículo y contexto fáciles de entender.</p>
+      <div class="sticker group relative bg-white border-2 border-ink rounded-xl pop-soft pt-10 px-7 pb-7">
+        <div class="absolute -top-6 left-7 w-12 h-12 rounded-full bg-mint border-2 border-ink flex items-center justify-center text-ink text-2xl wiggle">🗣️</div>
+        <h3 class="font-head font-bold text-xl mb-3">Barrera lingüística</h3>
+        <p class="font-medium text-mutedfg leading-relaxed">Los términos difíciles crean distancia. Cada figurita presenta al personaje de manera sencilla, con versículo y contexto fáciles de entender.</p>
       </div>
     </div>
 
     <!-- Versículo -->
-    <div class="mt-12 bg-yellow border-4 border-ink shadow-hard-lg p-8 sm:p-10 max-w-3xl mx-auto text-center">
-      <p class="font-black uppercase tracking-tight leading-tight text-xl sm:text-2xl lg:text-3xl">
+    <div class="mt-14 max-w-3xl mx-auto bg-amber border-2 border-ink rounded-2xl pop-lg p-8 sm:p-10 text-center">
+      <p class="font-head font-extrabold leading-tight text-xl sm:text-2xl">
         “Dejen que los niños vengan a mí y no se lo impidan, porque el Reino de los cielos pertenece a quienes son como ellos.”
       </p>
       <p class="mt-4 font-bold uppercase tracking-widest text-sm">— Mateo 19:14</p>
@@ -240,53 +265,54 @@
 </section>
 
 <!-- ============ EL EQUIPO DE JESÚS ============ -->
-<section class="bg-ink text-white border-b-4 border-ink">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
-    <div class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+<section class="relative bg-accent border-b-2 border-ink overflow-hidden">
+  <span class="absolute top-10 right-10 w-24 h-24 rounded-full bg-amber/30 border-2 border-white hidden md:block"></span>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-20 sm:py-24">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
       <div>
-        <h2 class="font-black uppercase tracking-tighter leading-[0.95] text-3xl sm:text-5xl lg:text-6xl">
-          🏆 El equipo<br>de <span class="text-yellow">Jesús</span>
+        <h2 class="font-head font-extrabold leading-[1.05] text-3xl sm:text-5xl text-white">
+          🏆 El equipo de <span class="text-amber">Jesús</span>
         </h2>
-        <p class="mt-6 text-lg font-medium leading-relaxed text-white/80">
+        <p class="mt-6 text-lg font-medium leading-relaxed text-white/85">
           Cada personaje forma parte del Equipo de Jesús. Tu hijo conocerá a los héroes de la fe de todas las épocas:
         </p>
         <div class="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-3">
-          <span class="bg-red text-white border-2 border-white font-bold uppercase tracking-wide text-sm px-4 py-3 text-center">👑 Reyes</span>
-          <span class="bg-blue text-white border-2 border-white font-bold uppercase tracking-wide text-sm px-4 py-3 text-center">⚔️ Jueces</span>
-          <span class="bg-yellow text-ink border-2 border-white font-bold uppercase tracking-wide text-sm px-4 py-3 text-center">🔥 Profetas</span>
-          <span class="bg-blue text-white border-2 border-white font-bold uppercase tracking-wide text-sm px-4 py-3 text-center">🕊️ Apóstoles</span>
-          <span class="bg-yellow text-ink border-2 border-white font-bold uppercase tracking-wide text-sm px-4 py-3 text-center">👨 Patriarcas</span>
-          <span class="bg-red text-white border-2 border-white font-bold uppercase tracking-wide text-sm px-4 py-3 text-center">👩 Mujeres</span>
-          <span class="bg-yellow text-ink border-2 border-white font-bold uppercase tracking-wide text-sm px-4 py-3 text-center">📜 Líderes AT</span>
-          <span class="bg-red text-white border-2 border-white font-bold uppercase tracking-wide text-sm px-4 py-3 text-center">✨ Precursores</span>
-          <span class="bg-blue text-white border-2 border-white font-bold uppercase tracking-wide text-sm px-4 py-3 text-center">🏛️ Post-Exilio</span>
+          <span class="bg-white text-ink border-2 border-ink rounded-full font-bold text-sm px-4 py-3 text-center pop">👑 Reyes</span>
+          <span class="bg-amber text-ink border-2 border-ink rounded-full font-bold text-sm px-4 py-3 text-center pop">⚔️ Jueces</span>
+          <span class="bg-pink text-white border-2 border-ink rounded-full font-bold text-sm px-4 py-3 text-center pop">🔥 Profetas</span>
+          <span class="bg-mint text-ink border-2 border-ink rounded-full font-bold text-sm px-4 py-3 text-center pop">🕊️ Apóstoles</span>
+          <span class="bg-white text-ink border-2 border-ink rounded-full font-bold text-sm px-4 py-3 text-center pop">👨 Patriarcas</span>
+          <span class="bg-pink text-white border-2 border-ink rounded-full font-bold text-sm px-4 py-3 text-center pop">👩 Mujeres</span>
+          <span class="bg-amber text-ink border-2 border-ink rounded-full font-bold text-sm px-4 py-3 text-center pop">📜 Líderes AT</span>
+          <span class="bg-white text-ink border-2 border-ink rounded-full font-bold text-sm px-4 py-3 text-center pop">✨ Precursores</span>
+          <span class="bg-mint text-ink border-2 border-ink rounded-full font-bold text-sm px-4 py-3 text-center pop">🏛️ Post-Exilio</span>
         </div>
       </div>
-      <div class="relative">
-        <span class="absolute -top-6 -left-6 w-24 h-24 rounded-full bg-yellow border-4 border-white z-0"></span>
-        <span class="absolute -bottom-6 -right-6 w-24 h-24 bg-red border-4 border-white rotate-45 z-0"></span>
-        <img src="images/time-de-jesus.png" alt="El equipo de Jesús" class="relative z-10 w-full border-4 border-white shadow-hard-lg">
+      <div class="relative flex justify-center">
+        <span class="absolute -top-5 -left-5 w-20 h-20 rounded-full bg-amber border-2 border-ink z-0"></span>
+        <span class="absolute -bottom-5 -right-5 w-20 h-20 bg-mint border-2 border-ink rounded-tl-2xl rounded-tr-2xl rounded-br-2xl z-0"></span>
+        <img src="images/time-de-jesus.png" alt="El equipo de Jesús" class="relative z-10 w-full border-2 border-ink rounded-2xl pop-lg">
       </div>
     </div>
   </div>
 </section>
 
 <!-- ============ PRUEBA SOCIAL (puente) ============ -->
-<section class="bg-yellow border-b-4 border-ink">
-  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-12 text-center">
-    <p class="font-black uppercase tracking-tight leading-tight text-2xl sm:text-4xl">
+<section class="bg-amber border-b-2 border-ink">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-14 text-center">
+    <p class="font-head font-extrabold leading-tight text-2xl sm:text-4xl">
       📜 Cada figurita pegada se convierte en una semilla de la Palabra plantada en el corazón.
     </p>
-    <p class="mt-6 inline-block bg-ink text-white font-bold uppercase tracking-widest text-sm sm:text-base px-6 py-3 border-2 border-ink shadow-hard-sm">
+    <p class="mt-6 inline-block bg-ink text-white font-bold uppercase tracking-widest text-sm sm:text-base px-6 py-3 rounded-full border-2 border-ink pop">
       +1.500 comentarios de familias impactadas ⭐
     </p>
   </div>
 </section>
 
 <!-- ============ FEEDBACKS MARQUEE ============ -->
-<section class="border-b-4 border-ink py-12 sm:py-16 overflow-hidden">
-  <h2 class="text-center font-black uppercase tracking-tighter text-2xl sm:text-4xl mb-10 px-4">
-    Lo que dicen las <span class="text-red">familias</span>
+<section class="border-b-2 border-ink py-14 sm:py-16 overflow-hidden bg-white">
+  <h2 class="text-center font-head font-extrabold text-2xl sm:text-4xl mb-10 px-4">
+    Lo que dicen las <span class="text-pink">familias</span> 💬
   </h2>
   <div class="marquee">
     <div class="marquee-track" id="marquee-track"></div>
@@ -294,60 +320,57 @@
 </section>
 
 <!-- ============ LO QUE RECIBES ============ -->
-<section class="border-b-4 border-ink dot-grid">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
-    <h2 class="font-black uppercase tracking-tighter leading-[0.95] text-3xl sm:text-5xl lg:text-6xl text-center">
-      ✨ Lo que <span class="text-blue">recibes</span>
+<section class="border-b-2 border-ink dot-grid">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-20 sm:py-24">
+    <h2 class="font-head font-extrabold leading-[1.05] text-3xl sm:text-5xl text-center">
+      ✨ Lo que <span class="text-accent">recibes</span>
     </h2>
 
-    <div class="mt-12 grid md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
-      <div class="relative bg-white border-4 border-ink shadow-hard-lg p-7 hover:-translate-y-1 transition-transform duration-200">
-        <span class="absolute -top-3 -right-3 w-7 h-7 rounded-full bg-red border-2 border-ink"></span>
-        <div class="text-4xl mb-4">📖</div>
-        <h3 class="font-bold uppercase tracking-wide text-xl mb-2">Álbum completo para imprimir</h3>
-        <p class="font-medium text-ink/80 leading-relaxed">Todas las páginas organizadas por categoría bíblica, con espacio para pegar cada figurita.</p>
+    <div class="mt-14 grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+      <div class="sticker group relative bg-white border-2 border-ink rounded-xl pop-pink pt-10 px-7 pb-7">
+        <div class="absolute -top-6 left-7 w-12 h-12 rounded-full bg-accent border-2 border-ink flex items-center justify-center text-white text-2xl wiggle">📖</div>
+        <h3 class="font-head font-bold text-xl mb-2">Álbum completo para imprimir</h3>
+        <p class="font-medium text-mutedfg leading-relaxed">Todas las páginas organizadas por categoría bíblica, con espacio para pegar cada figurita.</p>
       </div>
-      <div class="relative bg-white border-4 border-ink shadow-hard-lg p-7 hover:-translate-y-1 transition-transform duration-200">
-        <span class="absolute -top-3 -right-3 w-7 h-7 bg-blue border-2 border-ink"></span>
-        <div class="text-4xl mb-4">🎴</div>
-        <h3 class="font-bold uppercase tracking-wide text-xl mb-2">Pack con 87 figuritas bíblicas</h3>
-        <p class="font-medium text-ink/80 leading-relaxed">Todos los personajes ilustrados, con nombre, versículo y categoría, listos para imprimir y recortar.</p>
+      <div class="sticker group relative bg-white border-2 border-ink rounded-xl pop-pink pt-10 px-7 pb-7">
+        <div class="absolute -top-6 left-7 w-12 h-12 rounded-full bg-pink border-2 border-ink flex items-center justify-center text-white text-2xl wiggle">🎴</div>
+        <h3 class="font-head font-bold text-xl mb-2">Pack con 87 figuritas bíblicas</h3>
+        <p class="font-medium text-mutedfg leading-relaxed">Todos los personajes ilustrados, con nombre, versículo y categoría, listos para imprimir y recortar.</p>
       </div>
-      <div class="relative bg-white border-4 border-ink shadow-hard-lg p-7 hover:-translate-y-1 transition-transform duration-200">
-        <span class="absolute -top-3 -right-3 w-7 h-7 bg-yellow border-2 border-ink triangle"></span>
-        <div class="text-4xl mb-4">🏅</div>
-        <h3 class="font-bold uppercase tracking-wide text-xl mb-2">Certificado de finalización</h3>
-        <p class="font-medium text-ink/80 leading-relaxed">Al completar el álbum, el niño recibe un certificado especial que reconoce su recorrido por la Palabra.</p>
+      <div class="sticker group relative bg-white border-2 border-ink rounded-xl pop-pink pt-10 px-7 pb-7">
+        <div class="absolute -top-6 left-7 w-12 h-12 rounded-full bg-amber border-2 border-ink flex items-center justify-center text-ink text-2xl wiggle">🏅</div>
+        <h3 class="font-head font-bold text-xl mb-2">Certificado de finalización</h3>
+        <p class="font-medium text-mutedfg leading-relaxed">Al completar el álbum, el niño recibe un certificado especial que reconoce su recorrido por la Palabra.</p>
       </div>
-      <div class="relative bg-white border-4 border-ink shadow-hard-lg p-7 hover:-translate-y-1 transition-transform duration-200">
-        <span class="absolute -top-3 -right-3 w-7 h-7 rounded-full bg-red border-2 border-ink"></span>
-        <div class="text-4xl mb-4">🖨️</div>
-        <h3 class="font-bold uppercase tracking-wide text-xl mb-2">Guía de impresión y montaje</h3>
-        <p class="font-medium text-ink/80 leading-relaxed">Instrucciones completas para imprimir y montar todo el material sin complicaciones.</p>
+      <div class="sticker group relative bg-white border-2 border-ink rounded-xl pop-pink pt-10 px-7 pb-7">
+        <div class="absolute -top-6 left-7 w-12 h-12 rounded-full bg-mint border-2 border-ink flex items-center justify-center text-ink text-2xl wiggle">🖨️</div>
+        <h3 class="font-head font-bold text-xl mb-2">Guía de impresión y montaje</h3>
+        <p class="font-medium text-mutedfg leading-relaxed">Instrucciones completas para imprimir y montar todo el material sin complicaciones.</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ============ MISIÓN CUMPLIDA ============ -->
-<section class="bg-red text-white border-b-4 border-ink">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
-    <div class="grid lg:grid-cols-2 gap-10 items-center">
+<section class="relative bg-pink border-b-2 border-ink overflow-hidden">
+  <span class="absolute bottom-8 left-8 w-20 h-20 rounded-full bg-amber/40 border-2 border-white hidden md:block"></span>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-20 sm:py-24">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
       <div>
-        <span class="inline-block bg-yellow text-ink border-2 border-ink shadow-hard-sm font-bold uppercase tracking-widest text-sm px-4 py-2 mb-6">🏅 ¡Misión Cumplida!</span>
-        <h2 class="font-black uppercase tracking-tighter leading-[0.95] text-3xl sm:text-5xl">
-          Y al final hay una<br>última figurita...
+        <span class="inline-block bg-white text-ink border-2 border-ink rounded-full font-bold uppercase tracking-wide text-sm px-4 py-2 pop mb-6">🏅 ¡Misión Cumplida!</span>
+        <h2 class="font-head font-extrabold leading-[1.05] text-3xl sm:text-5xl text-white">
+          Y al final hay una última figurita...
         </h2>
-        <p class="mt-6 font-black uppercase tracking-tight text-4xl sm:text-6xl text-yellow">✨ La suya.</p>
+        <p class="mt-6 font-head font-extrabold text-4xl sm:text-6xl text-amber">✨ La suya.</p>
         <p class="mt-6 text-lg font-medium leading-relaxed text-white/90 max-w-md">
           Porque quien camina con Jesús también forma parte de esta selección. 💛 Al completar el álbum, el niño recibe un certificado que reconoce su recorrido por la Palabra de Dios.
         </p>
       </div>
       <div class="flex items-center justify-center">
-        <div class="relative bg-white text-ink border-4 border-ink shadow-hard-lg p-10 sm:p-14 text-center -rotate-2">
+        <div class="relative bg-white text-ink border-2 border-ink rounded-2xl pop-lg p-10 sm:p-14 text-center -rotate-2">
           <div class="text-6xl sm:text-8xl mb-4">🏅</div>
-          <p class="font-black uppercase tracking-tighter text-2xl sm:text-3xl">Certificado de<br>Finalización</p>
-          <p class="mt-3 font-bold uppercase tracking-widest text-sm text-ink/60">Recorrido por la Palabra</p>
+          <p class="font-head font-extrabold leading-tight text-2xl sm:text-3xl">Certificado de<br>Finalización</p>
+          <p class="mt-3 font-bold uppercase tracking-widest text-sm text-mutedfg">Recorrido por la Palabra</p>
         </div>
       </div>
     </div>
@@ -355,36 +378,42 @@
 </section>
 
 <!-- ============ OFERTA ============ -->
-<section id="oferta" class="bg-yellow border-b-4 border-ink relative overflow-hidden">
-  <span class="absolute -top-20 -left-20 w-72 h-72 rounded-full bg-red/40 border-4 border-ink"></span>
-  <span class="absolute -bottom-24 -right-24 w-80 h-80 bg-blue/30 border-4 border-ink rotate-45"></span>
+<section id="oferta" class="relative bg-bg border-b-2 border-ink overflow-hidden dot-grid">
+  <span class="absolute top-16 left-10 w-10 h-10 rounded-full bg-pink border-2 border-ink hidden md:block"></span>
+  <span class="absolute bottom-20 right-12 w-9 h-9 bg-mint border-2 border-ink rotate-12 hidden md:block"></span>
 
-  <div class="relative max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20 lg:py-24 text-center">
-    <span class="inline-block bg-ink text-white font-bold uppercase tracking-widest text-sm px-5 py-2.5 border-2 border-ink mb-8">
+  <div class="relative max-w-2xl mx-auto px-4 sm:px-6 py-20 sm:py-24 text-center">
+    <span class="inline-block bg-accent text-white font-bold uppercase tracking-widest text-sm px-5 py-2.5 rounded-full border-2 border-ink pop mb-8">
       ⭐ Oferta Especial de Lanzamiento
     </span>
 
-    <div class="bg-white border-4 border-ink shadow-hard-lg p-8 sm:p-12">
-      <h2 class="font-black uppercase tracking-tighter leading-[0.95] text-4xl sm:text-5xl">
-        Álbum de la <span class="text-red">Biblia</span>
-      </h2>
-      <p class="mt-5 font-bold uppercase tracking-wide text-base sm:text-lg text-ink/80">
-        Álbum + 87 Figuritas + Certificado + Guía de Impresión
-      </p>
-      <p class="mt-3 font-bold uppercase tracking-widest text-sm text-blue">Acceso inmediato y vitalicio</p>
-
-      <div class="my-8 py-8 border-y-4 border-ink">
-        <p class="font-bold uppercase tracking-wide text-lg">4X de</p>
-        <p class="font-black tracking-tighter text-6xl sm:text-7xl text-red">R$ 08,14</p>
-        <p class="mt-3 font-bold uppercase tracking-widest text-sm text-ink/60">— o —</p>
-        <p class="mt-3 font-black tracking-tighter text-3xl sm:text-4xl">R$ 29,90 <span class="text-lg font-bold align-middle">al contado</span></p>
+    <div class="relative bg-white border-2 border-ink rounded-2xl pop-lg p-8 sm:p-12">
+      <!-- selo estrela -->
+      <div class="absolute -top-5 -right-5 w-24 h-24 bg-amber border-2 border-ink rounded-full flex items-center justify-center rotate-12 pop">
+        <span class="font-head font-extrabold text-ink text-center text-xs leading-tight">ACCESO<br>VITALICIO</span>
       </div>
 
-      <a href="#" class="block w-full bg-red text-white border-2 border-ink shadow-hard-md btn-press font-black uppercase tracking-wide text-lg sm:text-xl px-6 py-5">
+      <h2 class="font-head font-extrabold leading-[1.05] text-4xl sm:text-5xl">
+        Álbum de la <span class="text-accent">Biblia</span>
+      </h2>
+      <p class="mt-5 font-bold text-base sm:text-lg text-mutedfg">
+        Álbum + 87 Figuritas + Certificado + Guía de Impresión
+      </p>
+      <p class="mt-3 font-bold uppercase tracking-widest text-sm text-pink">Acceso inmediato y vitalicio</p>
+
+      <div class="my-8 py-8 border-y-2 border-line">
+        <p class="font-bold uppercase tracking-wide text-lg">4X de</p>
+        <p class="font-head font-extrabold tracking-tight text-6xl sm:text-7xl text-accent">R$ 08,14</p>
+        <p class="mt-3 font-bold uppercase tracking-widest text-sm text-mutedfg">— o —</p>
+        <p class="mt-3 font-head font-extrabold tracking-tight text-3xl sm:text-4xl">R$ 29,90 <span class="text-lg font-bold align-middle">al contado</span></p>
+      </div>
+
+      <a href="#" class="flex items-center justify-center gap-3 w-full bg-accent text-white font-extrabold text-lg sm:text-xl rounded-full border-2 border-ink pop candy px-6 py-5">
         Quiero comenzar mi colección
+        <span class="w-8 h-8 rounded-full bg-white text-ink flex items-center justify-center">→</span>
       </a>
 
-      <div class="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-bold uppercase tracking-wide">
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm font-bold">
         <span>📥 Descarga inmediata</span>
         <span>🔒 Compra segura</span>
         <span>💜 Acceso vitalicio</span>
@@ -394,60 +423,60 @@
 </section>
 
 <!-- ============ GARANTÍA ============ -->
-<section class="border-b-4 border-ink">
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
-    <div class="relative bg-white border-4 border-ink shadow-hard-lg p-8 sm:p-12 flex flex-col sm:flex-row items-center gap-8">
+<section class="border-b-2 border-ink">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-20">
+    <div class="bg-white border-2 border-ink rounded-2xl pop-lg p-8 sm:p-12 flex flex-col sm:flex-row items-center gap-8">
       <div class="shrink-0">
-        <div class="w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-blue border-4 border-ink flex items-center justify-center">
+        <div class="w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-mint border-2 border-ink flex items-center justify-center pop">
           <span class="text-5xl sm:text-6xl">🛡️</span>
         </div>
       </div>
       <div class="text-center sm:text-left">
-        <h3 class="font-black uppercase tracking-tighter text-2xl sm:text-3xl">Garantía de 7 días<br><span class="text-red">¡Riesgo cero para ti!</span></h3>
-        <p class="mt-4 font-medium leading-relaxed text-ink/80">
-          Confiamos tanto en la calidad de nuestro material que te ofrecemos una garantía incondicional de 7 días. Si no estás totalmente satisfecho dentro de ese plazo, te devolvemos el <span class="font-bold">100% de tu dinero.</span>
+        <h3 class="font-head font-extrabold text-2xl sm:text-3xl">Garantía de 7 días<br><span class="text-pink">¡Riesgo cero para ti!</span></h3>
+        <p class="mt-4 font-medium leading-relaxed text-mutedfg">
+          Confiamos tanto en la calidad de nuestro material que te ofrecemos una garantía incondicional de 7 días. Si no estás totalmente satisfecho dentro de ese plazo, te devolvemos el <span class="font-bold text-ink">100% de tu dinero.</span>
         </p>
-        <p class="mt-4 font-bold uppercase tracking-wide text-sm text-blue">✅ Compra 100% segura y garantizada</p>
+        <p class="mt-4 font-bold uppercase tracking-wide text-sm text-mint">✅ Compra 100% segura y garantizada</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ============ FAQ ============ -->
-<section class="border-b-4 border-ink dot-grid">
-  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
-    <h2 class="font-black uppercase tracking-tighter text-3xl sm:text-5xl text-center mb-12">
-      Preguntas <span class="text-blue">frecuentes</span>
+<section class="border-b-2 border-ink dot-grid">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-20">
+    <h2 class="font-head font-extrabold text-3xl sm:text-5xl text-center mb-12">
+      Preguntas <span class="text-accent">frecuentes</span>
     </h2>
 
     <div class="space-y-5" id="faq">
-      <div class="acc-item border-4 border-ink shadow-hard-sm bg-white">
-        <button class="acc-header w-full flex items-center justify-between gap-4 p-5 text-left font-bold uppercase tracking-wide text-base sm:text-lg transition-colors">
+      <div class="acc-item bg-white border-2 border-ink rounded-xl pop overflow-hidden">
+        <button class="acc-header w-full flex items-center justify-between gap-4 p-5 text-left font-head font-bold text-base sm:text-lg">
           ¿El material es físico o digital?
-          <span class="acc-chevron transition-transform shrink-0 text-2xl">⌄</span>
+          <span class="acc-chevron transition-transform shrink-0 w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center">⌄</span>
         </button>
-        <div class="acc-content bg-[#FFF9C4] border-t-4 border-ink">
-          <p class="p-5 font-medium leading-relaxed">El material es 100% digital. Tras la compra recibes acceso inmediato para descargar e imprimir el álbum y las figuritas las veces que quieras, desde casa.</p>
+        <div class="acc-content border-t-2 border-line">
+          <p class="p-5 font-medium leading-relaxed text-mutedfg">El material es 100% digital. Tras la compra recibes acceso inmediato para descargar e imprimir el álbum y las figuritas las veces que quieras, desde casa.</p>
         </div>
       </div>
 
-      <div class="acc-item border-4 border-ink shadow-hard-sm bg-white">
-        <button class="acc-header w-full flex items-center justify-between gap-4 p-5 text-left font-bold uppercase tracking-wide text-base sm:text-lg transition-colors">
+      <div class="acc-item bg-white border-2 border-ink rounded-xl pop overflow-hidden">
+        <button class="acc-header w-full flex items-center justify-between gap-4 p-5 text-left font-head font-bold text-base sm:text-lg">
           ¿Cómo se realizará el envío del material?
-          <span class="acc-chevron transition-transform shrink-0 text-2xl">⌄</span>
+          <span class="acc-chevron transition-transform shrink-0 w-8 h-8 rounded-full bg-pink text-white flex items-center justify-center">⌄</span>
         </button>
-        <div class="acc-content bg-[#FFF9C4] border-t-4 border-ink">
-          <p class="p-5 font-medium leading-relaxed">No hay envío físico. El acceso es 100% online: recibirás un enlace de descarga en tu correo inmediatamente después de confirmar el pago.</p>
+        <div class="acc-content border-t-2 border-line">
+          <p class="p-5 font-medium leading-relaxed text-mutedfg">No hay envío físico. El acceso es 100% online: recibirás un enlace de descarga en tu correo inmediatamente después de confirmar el pago.</p>
         </div>
       </div>
 
-      <div class="acc-item border-4 border-ink shadow-hard-sm bg-white">
-        <button class="acc-header w-full flex items-center justify-between gap-4 p-5 text-left font-bold uppercase tracking-wide text-base sm:text-lg transition-colors">
+      <div class="acc-item bg-white border-2 border-ink rounded-xl pop overflow-hidden">
+        <button class="acc-header w-full flex items-center justify-between gap-4 p-5 text-left font-head font-bold text-base sm:text-lg">
           ¿Es católico o evangélico?
-          <span class="acc-chevron transition-transform shrink-0 text-2xl">⌄</span>
+          <span class="acc-chevron transition-transform shrink-0 w-8 h-8 rounded-full bg-amber text-ink flex items-center justify-center">⌄</span>
         </button>
-        <div class="acc-content bg-[#FFF9C4] border-t-4 border-ink">
-          <p class="p-5 font-medium leading-relaxed">El álbum se basa en los personajes y relatos de la Biblia, por lo que sirve para cualquier familia cristiana, tanto católica como evangélica. El foco es acercar a los niños a la Palabra de Dios.</p>
+        <div class="acc-content border-t-2 border-line">
+          <p class="p-5 font-medium leading-relaxed text-mutedfg">El álbum se basa en los personajes y relatos de la Biblia, por lo que sirve para cualquier familia cristiana, tanto católica como evangélica. El foco es acercar a los niños a la Palabra de Dios.</p>
         </div>
       </div>
     </div>
@@ -455,43 +484,44 @@
 </section>
 
 <!-- ============ CIERRE ============ -->
-<section class="bg-blue text-white border-b-4 border-ink relative overflow-hidden">
-  <span class="absolute top-10 left-10 w-32 h-32 rounded-full bg-yellow/50 border-4 border-white"></span>
-  <span class="absolute bottom-10 right-10 w-32 h-32 bg-red/60 border-4 border-white rotate-45"></span>
-  <div class="relative max-w-4xl mx-auto px-4 sm:px-6 py-16 sm:py-24 text-center">
-    <h2 class="font-black uppercase tracking-tighter leading-[0.95] text-3xl sm:text-5xl lg:text-6xl">
-      📖 Más que<br>figuritas...
+<section class="relative bg-accent overflow-hidden border-b-2 border-ink">
+  <span class="absolute top-12 left-12 w-20 h-20 rounded-full bg-amber/40 border-2 border-white hidden md:block"></span>
+  <span class="absolute bottom-12 right-12 w-20 h-20 bg-pink border-2 border-white rounded-tl-2xl rounded-tr-2xl rounded-br-2xl hidden md:block"></span>
+  <div class="relative max-w-3xl mx-auto px-4 sm:px-6 py-20 sm:py-24 text-center">
+    <h2 class="font-head font-extrabold leading-[1.05] text-3xl sm:text-5xl text-white">
+      📖 Más que figuritas...
     </h2>
-    <p class="mt-6 text-lg sm:text-2xl font-medium leading-relaxed max-w-2xl mx-auto">
+    <p class="mt-6 text-lg sm:text-2xl font-medium leading-relaxed max-w-2xl mx-auto text-white/90">
       ...una forma divertida de hacer que los niños se enamoren de la Biblia.
     </p>
-    <p class="mt-8 font-bold uppercase tracking-wide text-base sm:text-xl text-yellow">
+    <p class="mt-8 font-bold text-base sm:text-xl text-amber">
       Las figuritas completan el álbum,<br>la Palabra de Dios completa el corazón.
     </p>
-    <a href="#oferta" class="mt-10 inline-block bg-red text-white border-2 border-white shadow-hard-md btn-press font-black uppercase tracking-wide text-lg sm:text-xl px-8 py-5">
+    <a href="#oferta" class="mt-10 inline-flex items-center gap-3 bg-white text-ink font-extrabold text-lg sm:text-xl rounded-full border-2 border-ink pop candy px-8 py-5">
       Quiero comenzar mi colección
+      <span class="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center">→</span>
     </a>
   </div>
 </section>
 
 <!-- ============ FOOTER ============ -->
 <footer class="bg-ink text-white">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
-    <div class="flex items-center justify-center gap-1.5 mb-6">
-      <span class="w-6 h-6 rounded-full bg-red border-2 border-white"></span>
-      <span class="w-6 h-6 bg-blue border-2 border-white"></span>
-      <span class="w-6 h-6 bg-yellow border-2 border-white triangle"></span>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12 text-center">
+    <div class="flex items-center justify-center -space-x-1.5 mb-6">
+      <span class="w-6 h-6 rounded-full bg-accent border-2 border-white"></span>
+      <span class="w-6 h-6 rounded-full bg-pink border-2 border-white"></span>
+      <span class="w-6 h-6 rounded-full bg-amber border-2 border-white"></span>
     </div>
     <p class="font-medium text-white/70 mb-2">¿Todavía tienes alguna duda? Ponte en contacto con nuestro equipo:</p>
-    <a href="mailto:bibliatecamapeada@gmail.com" class="font-bold uppercase tracking-wide text-yellow hover:underline">bibliatecamapeada@gmail.com</a>
+    <a href="mailto:bibliatecamapeada@gmail.com" class="font-bold tracking-wide text-amber hover:underline">bibliatecamapeada@gmail.com</a>
     <p class="mt-8 font-bold uppercase tracking-widest text-xs text-white/50">BíbliaTeca Mapeada © 2023 — Todos los derechos reservados</p>
   </div>
 </footer>
 
 <script>
-  // ====== Feedbacks marquee (duplicado para loop infinito) ======
+  // ====== Feedbacks marquee ======
   const total = 31;
-  const skip = new Set([16]); // 16 no existe en el set descargado
+  const skip = new Set([16]);
   const track = document.getElementById('marquee-track');
   const exts = {2:'jpg',3:'jpeg',4:'jpeg',5:'jpeg',6:'jpeg',7:'jpeg',8:'jpeg',9:'jpeg',10:'jpeg'};
   const files = [];
@@ -502,11 +532,10 @@
     files.push(`images/feedbacks/fb${n}.${ext}`);
   }
   function card(src) {
-    return `<div class="shrink-0 w-56 sm:w-64 bg-white border-4 border-ink shadow-hard-sm overflow-hidden">
-      <img src="${src}" alt="Comentario de una familia" loading="lazy" class="w-full h-56 sm:h-64 object-cover grayscale hover:grayscale-0 transition-all duration-300">
+    return `<div class="shrink-0 w-56 sm:w-64 bg-white border-2 border-ink rounded-xl overflow-hidden pop">
+      <img src="${src}" alt="Comentario de una familia" loading="lazy" class="w-full h-56 sm:h-64 object-cover">
     </div>`;
   }
-  // duplicar para scroll continuo
   track.innerHTML = files.map(card).join('') + files.map(card).join('');
 
   // ====== FAQ accordion ======
